@@ -5,10 +5,10 @@ MDN Tutorial for Node + Express
 
 To run in devmode on \*nix systems, use:
 ```
-DEBUG=express-locallibrary-tutorial:* npm run devstart
+DEBUG=locallibrary:* npm run devstart
 ```
 
 On Windows, use:
 ```
-SET DEBUG=express-locallibrary-tutorial:* & npm run devstart
+SET DEBUG=locallibrary:* & npm run devstart
 ```
