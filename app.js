@@ -17,6 +17,10 @@ var config = JSON.parse(rawConfig);
 // Set up mongoose connection
 var mongoose = require('mongoose');
 var mongoDB = 'mongodb://' + config.dbuser + ':' + config.dbpass +'@ds121455.mlab.com:21455/local_library_mdesson'
+mongoose.connect(mongoDB);
+mongoose.Promise = global.Promise;
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
