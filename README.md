@@ -17,4 +17,4 @@ SET DEBUG=locallibrary:* & npm run devstart
 
 You must have a config.json in your root directory.
 
-Your Mongoose database user's username and password are stored as "user" and "pass", respectively.
+Your Mongoose database user's username and password are stored as `dbuser` and `dbpass`, respectively.

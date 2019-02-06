@@ -14,6 +14,9 @@ var app = express();
 var rawConfig = fs.readFileSync('config.json');
 var config = JSON.parse(rawConfig);
 
+// Set up mongoose connection
+var mongoose = require('mongoose');
+var mongoDB = 'mongodb://' + config.dbuser + ':' + config.dbpass +'@ds121455.mlab.com:21455/local_library_mdesson'
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
