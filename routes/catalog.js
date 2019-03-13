@@ -23,7 +23,7 @@ router.post('/book/create', book_controller.book_create_post);
 router.get('/book/:id/delete', book_controller.book_delete_get);
 
 // POST request to delete Book
-router.get('/book/:id/delete', book_controller.book_delete_post);
+router.post('/book/:id/delete', book_controller.book_delete_post);
 
 // GET rquest to update Book
 router.get('/book/:id/update', book_controller.book_update_get);
