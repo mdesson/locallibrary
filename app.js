@@ -9,8 +9,11 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var catalogRouter = require('./routes/catalog'); // Import routes for "catalog" areas of site
 var compression = require('compression');
+var helmet = require('helmet');
 
 var app = express();
+
+app.use(helmet());
 
 // Import config file
 var rawConfig = fs.readFileSync('config.json');
@@ -18,7 +21,8 @@ var config = JSON.parse(rawConfig);
 
 // Set up mongoose connection
 var mongoose = require('mongoose');
-var mongoDB = 'mongodb://' + config.dbuser + ':' + config.dbpass +'@ds121455.mlab.com:21455/local_library_mdesson'
+var dev_db_url = 'mongodb://' + config.dbuser + ':' + config.dbpass +'@ds121455.mlab.com:21455/local_library_mdesson'
+var mongoDB = process.env.MONGODB_URI || dev_db_url;
 mongoose.connect(mongoDB);
 mongoose.Promise = global.Promise;
 var db = mongoose.connection;
