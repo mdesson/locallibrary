@@ -150,6 +150,46 @@ exports.author_update_get = function(req, res, next) {
 };
 
 // Handle Author update on POST.
-exports.author_update_post = function(req, res) {
-    res.send('NOT IMPLEMENTED: Author update POST');
-};
+exports.author_update_post = [
+    // Validate fields
+    body('first_name').isLength({ min: 1 }).trim().withMessage('First name must be specified')
+        .isAlphanumeric().withMessage('First name has non-alphanumeric characters.'),
+    body('family_name').isLength({ min: 1} ).trim().withMessage('Family name must be specified')
+        .isAlphanumeric().withMessage('Family name has non-alphanumeric characters'),
+    body('date_of_birth', 'Invalid date of birth').optional( { checkFalsy: true }).isISO8601(),
+    body('date_of_death', 'Invalid date of death').optional( { checkFalsy: true }).isISO8601(),
+
+    // Sanitize fields
+    sanitizeBody('first_name').trim().escape(),
+    sanitizeBody('family_name').trim().escape(),
+    sanitizeBody('date_of_birth').toDate(),
+    sanitizeBody('date_of_death').toDate(),
+
+    // Process request after validation and sanitization
+    (req, res, next) => {
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            // There are errors, render form again with sanitized values/error msgs
+            res.render('author_form', { title: 'Update Author', author: req.body, errors: errors.array() });
+            return;
+        }
+        else {
+            // Data from is valid
+            // Create an Author object with escaped and trimmed data
+            var author = new Author(
+                { 
+                    first_name: req.body.first_name,
+                    family_name: req.body.family_name,
+                    date_of_birth: req.body.date_of_birth,
+                    date_of_death: req.body.date_of_death,
+                    _id: req.params.id
+                });
+            Author.findByIdAndUpdate(req.params.id, author, {}, function(err, theauthor) {
+                if (err) { return next(err); }
+                // Successful - redirect to author detail apge
+                res.redirect(theauthor.url);
+            });
+        }
+    }
+];
