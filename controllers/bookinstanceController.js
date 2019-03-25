@@ -1,5 +1,6 @@
 var BookInstance = require('../models/bookinstance');
 const { body,validationResult } = require('express-validator/check');
+var debug = require('debug')('bookinstance');
 const { sanitizeBody } = require('express-validator/filter');
 var Book = require('../models/book');
 var async = require('async');
@@ -10,8 +11,10 @@ exports.bookinstance_list = function(req, res, next) {
     BookInstance.find()
       .populate('book')
       .exec(function (err, list_bookinstances) {
-        if (err) { return next(err); }
-        // Successful, so render
+        if (err) { 
+            debug('list error: ' + err);
+            return next(err);
+        }        // Successful, so render
         res.render('bookinstance_list', { title: 'Book Instance List', bookinstance_list: list_bookinstances });
       });
       
@@ -23,8 +26,10 @@ exports.bookinstance_detail = function(req, res, next) {
     BookInstance.findById(req.params.id)
     .populate('book')
     .exec(function (err, bookinstance) {
-        if (err) { return next(err); }
-        if (bookinstance==null) { // no results
+        if (err) { 
+            debug('detail error: ' + err);
+            return next(err);
+        }        if (bookinstance==null) { // no results
             var err = new Error('Book copy not found');
             err.status = 404;
             return next(err);
@@ -39,8 +44,10 @@ exports.bookinstance_create_get = function(req, res, next) {
 
     Book.find({},'title')
     .exec(function (err, books) {
-      if (err) { return next(err); }
-      // Successful, so render.
+        if (err) { 
+            debug('create error: ' + err);
+            return next(err);
+        }      // Successful, so render.
       res.render('bookinstance_form', {title: 'Create BookInstance', book_list: books});
     });
     
@@ -78,8 +85,10 @@ exports.bookinstance_create_post = [
             // There are errors. Render form again with sanitized values and error messages.
             Book.find({},'title')
                 .exec(function (err, books) {
-                    if (err) { return next(err); }
-                    // Successful, so render.
+                    if (err) { 
+                        debug('create error: ' + err);
+                        return next(err);
+                    }                    // Successful, so render.
                     res.render('bookinstance_form', { title: 'Create BookInstance', book_list : books, selected_book : bookinstance.book._id , errors: errors.array(), bookinstance:bookinstance });
             });
             return;
@@ -87,8 +96,10 @@ exports.bookinstance_create_post = [
         else {
             // Data from form is valid.
             bookinstance.save(function (err) {
-                if (err) { return next(err); }
-                   // Successful - redirect to new record.
+                if (err) { 
+                    debug('create error: ' + err);
+                    return next(err);
+                }                   // Successful - redirect to new record.
                    res.redirect(bookinstance.url);
                 });
         }
@@ -99,8 +110,10 @@ exports.bookinstance_create_post = [
 exports.bookinstance_delete_get = function(req, res, next) {
     BookInstance.findById(req.params.id).exec(
         function(err, book_instance) {
-            if (err) { return next(err); }
-            if (book_instance == null) { // No results
+            if (err) { 
+                debug('delete error: ' + err);
+                return next(err);
+            }            if (book_instance == null) { // No results
                 res.redirect('/catalog/bookinstances');
             }
             // Successful, so render
@@ -115,8 +128,10 @@ exports.bookinstance_delete_post = function(req, res, next) {
     BookInstance.findById(req.body.bookinstanceid).exec(
         function(err, book_instance) {
             BookInstance.findByIdAndRemove(req.body.bookinstanceid, function deleteBookInstance(err) {
-                if (err) { return next(err); }
-                // Success - go to book list
+                if (err) { 
+                    debug('delete error: ' + err);
+                    return next(err);
+                }                // Success - go to book list
                 res.redirect('/catalog/bookinstances');
             })
         }
@@ -177,8 +192,10 @@ exports.bookinstance_update_post = [
                 // There are errors. Render form again with sanitized values and error messages.
                 Book.find({},'title')
                     .exec(function (err, books) {
-                        if (err) { return next(err); }
-                        // Successful, so render.
+                        if (err) { 
+                            debug('update error: ' + err);
+                            return next(err);
+                        }                        // Successful, so render.
                         res.render('bookinstance_form', { title: 'Create BookInstance', book_list : books, selected_book : bookinstance.book._id , errors: errors.array(), bookinstance:bookinstance });
                 });
                 return;
@@ -186,8 +203,10 @@ exports.bookinstance_update_post = [
             else {
                 // Data from form is valid. Update the record.
                 BookInstance.findByIdAndUpdate(req.params.id, bookinstance, {}, function (err,thebookinstance) {
-                if (err) { return next(err); }
-                   // Successful - redirect to book detail page.
+                    if (err) { 
+                        debug('update error: ' + err);
+                        return next(err);
+                    }                   // Successful - redirect to book detail page.
                    res.redirect(thebookinstance.url);
                 });
             }

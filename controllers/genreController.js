@@ -11,8 +11,10 @@ exports.genre_list = function(req, res, next) {
         .sort([['name', 'ascending']])
         .exec(function(err, list_genres) {
             // Successful so render
-            if (err) {return next(err); }
-            res.render('genre_list', {title: 'Genre List', genre_list: list_genres });
+            if (err) { 
+                debug('list error: ' + err);
+                return next(err);
+            }            res.render('genre_list', {title: 'Genre List', genre_list: list_genres });
         });
 };
 
@@ -29,8 +31,10 @@ exports.genre_detail = function(req, res, next) {
                 .exec(callback);
         },
     }, function(err, results) {
-        if (err) { return next(err) }
-        if (results.genre==null) { // no results
+        if (err) { 
+            debug('detail error: ' + err);
+            return next(err);
+        }        if (results.genre==null) { // no results
             var err = new Error('Genre not found');
             err.status = 404;
             return next(err);
@@ -74,8 +78,10 @@ exports.genre_create_post = [
             // Check if Genre with same name already exists
             Genre.findOne({ 'name': req.body.name })
                 .exec(function(err, found_genre) {
-                    if (err) { return next(err); }
-
+                    if (err) { 
+                        debug('create error: ' + err);
+                        return next(err);
+                    }
                     if (found_genre) {
                         // Genre exists, rediect to its detail page
                         res.redirect(found_genre.url);
@@ -83,8 +89,10 @@ exports.genre_create_post = [
                     else {
 
                         genre.save(function (err) {
-                            if (err) { return next(err); }
-                            // Genre saved. Redirect to genre detail page
+                            if (err) { 
+                                debug('create error: ' + err);
+                                return next(err);
+                            }                            // Genre saved. Redirect to genre detail page
                             res.redirect(genre.url);
                         });
                     }
@@ -104,8 +112,10 @@ exports.genre_delete_get = function(req, res, next) {
             Book.find({ 'genre': req.params.id }).populate('genre').exec(callback);
         }
     }, function(err, results) {
-        if (err) { return next(err) }
-        if (results.genre == null) { // No results
+        if (err) { 
+            debug('delete error: ' + err);
+            return next(err);
+        }        if (results.genre == null) { // No results
             res.redirect('/catalog/genres');
         }
         res.render('genre_delete', { title: 'Delete Genre', genre: results.genre, genre_books: results.genre_books })
@@ -131,8 +141,10 @@ exports.genre_delete_post = function(req, res, next) {
         }
         else {
             Genre.findByIdAndRemove(req.body.genreid, function deleteGenre(err) {
-                if (err) { return next(err); }
-                // Success - go to genre list
+                if (err) { 
+                    debug('delete error: ' + err);
+                    return next(err);
+                }                // Success - go to genre list
                 res.redirect('/catalog/genres');
             });
         }
@@ -143,8 +155,10 @@ exports.genre_delete_post = function(req, res, next) {
 exports.genre_update_get = function(req, res, next) {
     Genre.findById(req.params.id)
     .exec(function (err, req_genre) {
-        if (err) { return next(err); }
-        // Successful, so render
+        if (err) { 
+            debug('update error: ' + err);
+            return next(err);
+        }        // Successful, so render
         res.render('genre_form', {title: 'Update Genre', genre: req_genre});
     });
 };
@@ -177,8 +191,10 @@ exports.genre_update_post = [
         }
         else {
             Genre.findByIdAndUpdate(req.params.id, genre, {}, function(err, thegenre) {
-                if (err) { return next(err); }
-                // Successful - redirect to the genre detail page
+                if (err) { 
+                    debug('update error: ' + err);
+                    return next(err);
+                }                // Successful - redirect to the genre detail page
                 res.redirect(thegenre.url);
             });
         }
