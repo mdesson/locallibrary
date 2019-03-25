@@ -21,7 +21,7 @@ var config = JSON.parse(rawConfig);
 
 // Set up mongoose connection
 var mongoose = require('mongoose');
-var dev_db_url = 'mongodb://' + config.dbuser + ':' + config.dbpass +'@ds121455.mlab.com:21455/local_library_mdesson'
+var dev_db_url = 'mongodb://' + process.env.DBUSER + ':' + process.env.DBPASS +'@ds121455.mlab.com:21455/local_library_mdesson'
 var mongoDB = process.env.MONGODB_URI || dev_db_url;
 mongoose.connect(mongoDB);
 mongoose.Promise = global.Promise;
