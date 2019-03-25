@@ -132,8 +132,8 @@ exports.bookinstance_update_get = function(req, res, next) {
         bookinstance: function(callback) {
             BookInstance.findById(req.params.id).populate('book').exec(callback);
         },
-        book: function(callback) {
-            Book.find(callback);
+        books: function(callback) {
+            Book.find({},'title').exec(callback);
         }
     }, function(err, results) {
         if (results.bookinstance==null) {
@@ -141,7 +141,7 @@ exports.bookinstance_update_get = function(req, res, next) {
             err.status = 404;
             return next(err);
         }
-        res.render('bookinstance_form', {title: 'Update Book Instance', book: results.book, bookinstance: results.bookinstance});
+        res.render('bookinstance_form', {title: 'Update Book Instance', book_list: results.books, bookinstance: results.bookinstance});
     });
 };
 

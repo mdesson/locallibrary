@@ -2,6 +2,7 @@ extends layout
 
 block content
   h1=title
+  h1=bookinstance.due_back_form
 
   form(method='POST' action='')
     div.form-group
@@ -9,7 +10,7 @@ block content
       select#book.form-control(type='select' placeholder='Select book' name='book' required='true')
         for book in book_list
           if bookinstance
-            option(value=book._id selected=(bookinstance.book.toString()==book._id.toString() ? 'selected' : false)) #{book.title}
+            option(value=book._id selected=((bookinstance.book._id.toString()==book._id.toString()) ? 'selected' : false)) #{book.title}
           else
             option(value=book._id) #{book.title}
         
@@ -18,15 +19,22 @@ block content
       input#imprint.form-control(type='text' placeholder='Publisher and date information' name='imprint' required='true' value=(undefined===bookinstance ? '' : bookinstance.imprint))
     div.form-group
       label(for='due_back') Date when book available:
-      input#due_back.form-control(type='date' name='due_back' value=(undefined===bookinstance ? '' : bookinstance.due_back))
+      input#due_back.form-control(type='date' name='due_back' value=(undefined===bookinstance ? '' : bookinstance.due_back_form))
             
     div.form-group
       label(for='status') Status:
       select#status.form-control(type='select' placeholder='Select status' name='status' required='true')
-        option(value='Maintenance') Maintenance
-        option(value='Available') Available
-        option(value='Loaned') Loaned
-        option(value='Reserved') Reserved
+        if bookinstance 
+          option(value='Maintenance' selected=(bookinstance.status=='Maintenance' ? 'selected' : false)) Maintenance
+          option(value='Available' selected=(bookinstance.status=='Available' ? 'selected' : false)) Available
+          option(value='Loaned' selected=(bookinstance.status=='Loaned' ? 'selected' : false)) Loaned
+          option(value='Reserved' selected=(bookinstance.status=='Reserved' ? 'selected' : false)) Reserved
+        else
+          option(value='Maintenance') Maintenance
+          option(value='Available') Available
+          option(value='Loaned') Loaned
+          option(value='Reserved') Reserved
+        
 
     button.btn.btn-primary(type='submit') Submit
 
