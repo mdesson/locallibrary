@@ -8,6 +8,7 @@ var fs = require('fs');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var catalogRouter = require('./routes/catalog'); // Import routes for "catalog" areas of site
+var compression = require('compression');
 
 var app = express();
 
@@ -26,6 +27,8 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+
+app.use(compression());
 
 app.use(logger('dev'));
 app.use(express.json());
