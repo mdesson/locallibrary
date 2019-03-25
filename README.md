@@ -5,12 +5,12 @@ MDN Tutorial for Node + Express
 
 To run in devmode on \*nix systems, use:
 ```
-DEBUG=locallibrary:* npm run devstart
+DEBUG="author,book,bookinstance,genre" npm run devstart
 ```
 
 On Windows, use:
 ```
-SET DEBUG=locallibrary:* & npm run devstart
+set DEBUG=author,book,bookinstance,genre
 ```
 
 ## Configuring
